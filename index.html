@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#17202a">
+<title>PGS PIANEZZA VOLLEYM</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f6f8;color:#17202a}
+header{background:#fff;padding:16px;text-align:center;border-bottom:1px solid #e5e7eb}header img{max-width:180px;max-height:100px;object-fit:contain}
+h1{margin:8px 0 2px;font-size:24px}.subtitle{color:#667085;margin-bottom:12px}
+nav select{width:100%;max-width:560px;padding:12px;border-radius:10px;border:1px solid #cfd5dc;background:#fff;font-size:16px}
+main{max-width:1000px;margin:auto;padding:18px}.page{display:none}.page.active{display:block}
+.grid,.team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.box,.card,.panel,.player-card{background:#fff;border-radius:14px;border:1px solid #e3e7eb;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.box,.panel{padding:18px}.wait{text-align:center;padding:30px;color:#667085}
+.player-card{overflow:hidden}.player-photo{height:250px;background:#e9edf1;display:flex;align-items:center;justify-content:center;font-size:64px;color:#98a2b3;overflow:hidden}
+.player-photo img{width:100%;height:100%;object-fit:cover}.player-info{padding:16px}.player-name{font-size:20px;font-weight:700;margin-bottom:6px}.player-role{color:#667085}
+.number{display:inline-block;margin-top:10px;background:#17202a;color:#fff;border-radius:999px;padding:6px 11px;font-weight:700}
+button{border:0;border-radius:10px;padding:11px 14px;font-size:15px;cursor:pointer}
+.btn-primary{background:#17202a;color:#fff}.btn-secondary{background:#eef1f4}.btn-danger{background:#b42318;color:#fff}
+input{width:100%;padding:11px;border:1px solid #cfd5dc;border-radius:10px;font-size:15px;margin-top:6px}
+label{display:block;margin-top:12px;font-weight:600}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.status{padding:10px;border-radius:10px;background:#f2f4f7;color:#475467;margin-top:10px}
+.hidden{display:none!important}.small{font-size:13px;color:#667085}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANIAAADuCAYAAABMIVmUAAAAAXNSR0IArs4c6QAAAIRlWElmTU0AKgAAAAgABQESAAMAAAABAAEAAAEaAAUAAAABAAAASgEbAAUAAAABAAAAUgEoAAMAAAABAAIAAIdpAAQAAAABAAAAWgAA[...]
+<h1>PGS PIANEZZA VOLLEYM</h1><div class="subtitle">Eccellenza B Maschile</div>
+<nav><select id="menu" onchange="showPage(this.value)">
+<option value="home">🏠 Home</option><option value="team">👥 Team</option><option value="calendar">📅 Calendario</option>
+<option value="groups">🏆 Gironi</option><option value="ranking">📊 Classifica</option><option value="admin">⚙️ Admin</option>
+</select></nav>
+</header>
+<main>
+<section id="home" class="page active"><h2>Benvenuti</h2><div class="grid">
+<div class="box"><h3>Girone A</h3><div class="wait">In attesa della pubblicazione ufficiale.</div></div>
+<div class="box"><h3>Girone B</h3><div class="wait">In attesa della pubblicazione ufficiale.</div></div></div></section>
+
+<section id="team" class="page"><h2>👥 Team</h2><p class="small">Rosa della PGS PIANEZZA.</p>
+<div id="teamList" class="team-grid"></div><div id="teamEmpty" class="wait hidden">Nessun giocatore inserito.</div></section>
+
+<section id="calendar" class="page"><h2>📅 Calendario</h2><div class="panel wait">Calendario in attesa della pubblicazione ufficiale.</div></section>
+<section id="groups" class="page"><h2>🏆 Gironi</h2><div class="grid"><div class="box"><h3>Girone A</h3><div class="wait">In attesa.</div></div><div class="box"><h3>Girone B</h3><div class="wait">In[...]
+<section id="ranking" class="page"><h2>📊 Classifica</h2><div class="panel wait">Classifica in attesa dei risultati ufficiali.</div></section>
+
+<section id="admin" class="page"><h2>⚙️ Admin</h2>
+<div id="loginBox" class="panel"><h3>Accesso amministratore</h3><p class="small">Usa l'account Supabase che hai registrato come amministratore.</p>
+<label>Email<input id="email" type="email" autocomplete="email" placeholder="La tua email"></label>
+<label>Password<input id="password" type="password" autocomplete="current-password" placeholder="Password"></label>
+<div class="actions"><button class="btn-primary" onclick="login()">Accedi</button></div>
+<div id="loginStatus" class="status hidden"></div></div>
+
+<div id="adminBox" class="panel hidden"><h3>Gestione Team</h3><div id="whoami" class="small"></div>
+<div class="form-grid"><div><label>Nome e cognome<input id="pName" placeholder="Mario Rossi"></label></div>
+<div><label>Numero<input id="pNumber" type="number" min="0" max="99" placeholder="10"></label></div></div>
+<label>Ruolo<input id="pRole" placeholder="Schiacciatore"></label>
+<label>Foto giocatore <span class="small">(scegli una foto dal telefono)</span><input id="pPhoto" type="file" accept="image/*"></label>
+<div class="actions"><button class="btn-primary" onclick="savePlayer()">Salva giocatore</button><button class="btn-secondary" onclick="clearForm()">Pulisci</button><button class="btn-secondary" onclick="logout()">Logout</button></div>
+<div id="editStatus" class="status hidden"></div><hr style="border:0;border-top:1px solid #e5e7eb;margin:20px 0"><div id="adminPlayers"></div></div>
+</section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL="https://tdckekeuvehmbehcxvsb.supabase.co";
+const SUPABASE_KEY="sb_publishable_3dBQcCsisFyhH1622W3gMg_VxzLwJAA";
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let editingId=null;
+
+function showPage(id){
+ document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+ const el=document.getElementById(id);if(el)el.classList.add("active");
+ if(id==="team")loadTeam();if(id==="admin")refreshAdmin();
+}
+function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
+function photoMarkup(p){return p.photo_url?'<img src="'+esc(p.photo_url)+'" alt="'+esc(p.name)+'">':'<div>🏐</div>';}
+
+async function loadTeam(){
+ const {data,error}=await sb.from("players").select("*").order("number",{ascending:true,nullsFirst:false}).order("name");
+ const list=document.getElementById("teamList"),empty=document.getElementById("teamEmpty");
+ if(error){list.innerHTML='<div class="panel">Errore nel caricamento del Team.</div>';return;}
+ if(!data||!data.length){list.innerHTML="";empty.classList.remove("hidden");return;}
+ empty.classList.add("hidden");
+ list.innerHTML=data.map(p=>'<article class="player-card"><div class="player-photo">'+photoMarkup(p)+'</div><div class="player-info"><div class="player-name">'+esc(p.name)+'</div><div class="player-role">'+esc(p.role||"")+'</div>'+(p.number!=null?'<div class="number">#'+esc(p.number)+'</div>':'')+'</div></article>').join("");
+}
+async function isAdmin(){
+ const {data:{user}}=await sb.auth.getUser();if(!user)return null;
+ const {data}=await sb.from("admin_users").select("user_id").eq("user_id",user.id).maybeSingle();
+ return data?user:null;
+}
+async function refreshAdmin(){
+ const admin=await isAdmin();
+ document.getElementById("loginBox").classList.toggle("hidden",!!admin);
+ document.getElementById("adminBox").classList.toggle("hidden",!admin);
+ if(admin){document.getElementById("whoami").textContent="Accesso effettuato come "+(admin.email||"amministratore");loadAdminPlayers();}
+}
+async function login(){
+ const email=document.getElementById("email").value.trim(),password=document.getElementById("password").value;
+ const st=document.getElementById("loginStatus");st.classList.remove("hidden");
+ const {error}=await sb.auth.signInWithPassword({email,password});
+ if(error){st.textContent="Accesso non riuscito: "+error.message;return;}
+ st.textContent="Accesso effettuato.";refreshAdmin();
+}
+async function logout(){await sb.auth.signOut();editingId=null;clearForm();refreshAdmin();}
+function clearForm(){editingId=null;document.getElementById("pName").value="";document.getElementById("pNumber").value="";document.getElementById("pRole").value="";document.getElementById("pPhoto").value="";const st=document.getElementById("editStatus");st.classList.add("hidden");st.textContent="";}
+async function fileToDataUrl(file){
+ if(!file)return null;if(file.size>2*1024*1024)throw new Error("La foto deve essere sotto 2 MB.");
+ return await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file);});
+}
+async function savePlayer(){
+ if(!await isAdmin()){alert("Devi effettuare l'accesso come amministratore.");return;}
+ const name=document.getElementById("pName").value.trim(),nv=document.getElementById("pNumber").value,role=document.getElementById("pRole").value.trim(),file=document.getElementById("pPhoto").files[0];
+ const st=document.getElementById("editStatus");st.classList.remove("hidden");
+ if(!name){st.textContent="Inserisci nome e cognome.";return;}
+ try{
+  let photo_url=null;if(file)photo_url=await fileToDataUrl(file);
+  const payload={name,number:nv===""?null:Number(nv),role};if(photo_url)payload.photo_url=photo_url;
+  const result=editingId?await sb.from("players").update(payload).eq("id",editingId):await sb.from("players").insert(payload);
+  if(result.error){st.textContent="Errore: "+result.error.message;return;}
+  st.textContent=editingId?"Giocatore aggiornato!":"Giocatore aggiunto!";clearForm();await loadAdminPlayers();await loadTeam();
+ }catch(e){st.textContent="Errore: "+e.message;}
+}
+async function loadAdminPlayers(){
+ const box=document.getElementById("adminPlayers");
+ const {data,error}=await sb.from("players").select("*").order("number",{ascending:true,nullsFirst:false}).order("name");
+ if(error){box.innerHTML='<div class="status">Errore: '+esc(error.message)+'</div>';return;}
+ if(!data.length){box.innerHTML='<div class="status">Nessun giocatore inserito.</div>';return;}
+ box.innerHTML="<h4>Giocatori inseriti</h4>"+data.map(p=>'<div class="panel" style="margin-top:10px"><strong>'+esc(p.name)+'</strong> — '+esc(p.role||"")+(p.number!=null?" #"+esc(p.number):"")+'<div class="actions"><button class="btn-secondary" onclick="editPlayer('+JSON.stringify(p)+')">Modifica</button><button class="btn-danger" onclick="deletePlayer('+p.id+')">Elimina</button></div></div>').join("");
+}
+function editPlayer(p){editingId=p.id;document.getElementById("pName").value=p.name||"";document.getElementById("pNumber").value=p.number??"";document.getElementById("pRole").value=p.role||"";document.getElementById("pPhoto").value="";document.getElementById("pName").focus();}
+async function deletePlayer(id){if(!confirm("Eliminare questo giocatore?"))return;const {error}=await sb.from("players").delete().eq("id",id);if(error){alert("Errore: "+error.message);return;}await loadAdminPlayers();await loadTeam();}
+sb.auth.onAuthStateChange(()=>refreshAdmin());
+loadTeam();
+</script>
+</body>
+</html>
